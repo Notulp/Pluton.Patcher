@@ -4,6 +4,11 @@ namespace Pluton.Patcher.JSON
 {
     public class Value
     {
+        internal object value {
+            get;
+            set;
+        }
+
         public Array Array {
             get;
             set;
@@ -19,7 +24,7 @@ namespace Pluton.Patcher.JSON
             set;
         }
 
-        public Object Obj {
+        public JSON.Object Obj {
             get;
             set;
         }
@@ -63,36 +68,40 @@ namespace Pluton.Patcher.JSON
             }
         }
 
-        public Value (bool boolean)
+        public Value(bool boolean)
         {
             Type = ValueType.Boolean;
             Boolean = boolean;
+            value = boolean;
         }
 
-        public Value (Array array)
+        public Value(Array array)
         {
             Type = ValueType.Array;
             Array = array;
+            value = array;
         }
 
-        public Value (double number)
+        public Value(double number)
         {
             Type = ValueType.Number;
             Number = number;
+            value = number;
         }
 
-        public Value (string str)
+        public Value(string str)
         {
             Type = ValueType.String;
             Str = str;
+            value = str;
         }
 
-        public Value (ValueType type)
+        public Value(ValueType type)
         {
             Type = type;
         }
 
-        public Value (Object obj)
+        public Value(JSON.Object obj)
         {
             if (obj == null) {
                 Type = ValueType.Null;
@@ -100,10 +109,11 @@ namespace Pluton.Patcher.JSON
             else {
                 Type = ValueType.Object;
                 Obj = obj;
+                value = obj;
             }
         }
 
-        public override string ToString ()
+        public override string ToString()
         {
             switch (Type) {
             case ValueType.String:
@@ -123,24 +133,24 @@ namespace Pluton.Patcher.JSON
             }
         }
 
-        public static implicit operator Value (Array array) {
-            return new Value (array);
+        public static implicit operator Value(Array array) {
+            return new Value(array);
         }
 
-        public static implicit operator Value (string str) {
-            return new Value (str);
+        public static implicit operator Value(string str) {
+            return new Value(str);
         }
 
-        public static implicit operator Value (double number) {
-            return new Value (number);
+        public static implicit operator Value(double number) {
+            return new Value(number);
         }
 
-        public static implicit operator Value (Object obj) {
-            return new Value (obj);
+        public static implicit operator Value(Object obj) {
+            return new Value(obj);
         }
 
-        public static implicit operator Value (bool boolean) {
-            return new Value (boolean);
+        public static implicit operator Value(bool boolean) {
+            return new Value(boolean);
         }
     }
 }
