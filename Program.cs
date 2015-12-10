@@ -40,9 +40,8 @@ namespace Pluton.Patcher
             Console.WriteLine(string.Format("[( Pluton Patcher v{0} )]", Version));
 
             rustAssembly = AssemblyPatcher.GetPatcher("Assembly-CSharp.dll");
-            if (rustAssembly.GetType("PlutonPatched") == null)
-                rustAssembly.CreateType("", "PlutonPatched");
-            else {
+
+            if (rustAssembly.GetType("PlutonPatched") != null) {
                 Console.WriteLine("Assembly-CSharp.dll is already patched!");
                 return (int)ExitCode.ACDLL_ALREADY_PATCHED;
             }
@@ -55,7 +54,6 @@ namespace Pluton.Patcher
                     return (int)ExitCode.ACDLL_GENERIC_PATCH_ERR;
                 }
             }
-
             //Check if patching is required
             // TODO: add support for adding new Types/Fields/Methods via json
             /*TypePatcher plutonClass = rustAssembly.GetType("PlutonPatched");
