@@ -34,6 +34,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <Externalconsole>true</Externalconsole>
     <LangVersion>6</LangVersion>
+    <DefineConstants>RELEASE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -74,14 +75,24 @@
     <Compile Include="JSON\Array.cs" />
     <Compile Include="JSON\Extensions.cs" />
     <Compile Include="Patch\MethodPatch.cs" />
-    <Compile Include="Patch\InstructionPatch.cs" />
     <Compile Include="Patch\AssemblyPatch.cs" />
     <Compile Include="Patch\TypePatch.cs" />
+    <Compile Include="Patch\MethodInstruction.cs" />
+    <Compile Include="Patch\FieldInstruction.cs" />
+    <Compile Include="Patch\TypeInstruction.cs" />
+    <Compile Include="Patch\FieldPatch.cs" />
+    <Compile Include="Reflection\FieldPatcher.cs" />
+    <Compile Include="Patch\Base\BaseInstruction.cs" />
+    <Compile Include="Patch\Base\BasePatch.cs" />
+    <Compile Include="Patch\Base\IInstruction.cs" />
+    <Compile Include="Patch\Base\IPatch.cs" />
+    <Compile Include="Patch\AssemblyInstruction.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Folder Include="JSON\" />
     <Folder Include="Patch\" />
+    <Folder Include="Patch\Base\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Pluton.Patcher.Rust.json">
