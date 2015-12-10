@@ -11,6 +11,16 @@ namespace Pluton.Patcher.Reflection
 
         string original;
 
+        public bool Public {
+            get {
+                return methodDefinition.IsPublic;
+            }
+            set {
+                methodDefinition.IsPublic = value;
+                methodDefinition.IsPrivate = !value;
+            }
+        }
+
         public MethodPatcher(PatcherObject prnt, MethodDefinition metDef) : base(prnt)
         {
             methodDefinition = metDef;

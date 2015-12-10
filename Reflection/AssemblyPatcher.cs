@@ -46,11 +46,46 @@ namespace Pluton.Patcher.Reflection
             return new AssemblyPatcher(AssemblyDefinition.ReadAssembly(filename));
         }
 
-        public TypePatcher CreateType(string @namespace, string name)
+        public TypePatcher CreateType(string fullname)
         {
-            TypeDefinition plutonClass = new TypeDefinition(@namespace, name, TypeAttributes.Public, mainModule.Import(typeof(Object)));
-            mainModule.Types.Add(plutonClass);
-            return GetType(name);
+            return CreateType(fullname, TypeAttributes.Public | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit, typeof(Object));
+        }
+
+        public TypePatcher CreateType(string fullname, TypeAttributes attribs, Type Base)
+        {
+            var nameSpace = "";
+            var name = fullname;
+            if (fullname.Contains('.')) {
+                nameSpace = fullname.Remove(fullname.LastIndexOf('.'));
+                name = name.Remove(0, name.LastIndexOf('.'));
+            }
+            return CreateType(nameSpace, name, attribs, Base);
+        }
+
+        public TypePatcher CreateType<T>(string fullname, TypeAttributes attribs)
+        {
+            return CreateType(fullname, attribs, typeof(T));
+        }
+
+        public TypePatcher CreateType(string nameSpace, string name)
+        {
+            return CreateType(nameSpace + "." + name);
+        }
+
+        public TypePatcher CreateType(string nameSpace, string name, TypeAttributes attribs, Type Base)
+        {
+            TypeDefinition newClass = new TypeDefinition(nameSpace, name, attribs, mainModule.Import(Base));
+            mainModule.Types.Add(newClass);
+            mainModule.Import(newClass);
+
+            if (nameSpace == "")
+                return GetType(name);
+            return GetType(nameSpace + "." + name);
+        }
+
+        public TypePatcher CreateType<T>(string nameSpace, string name, TypeAttributes attribs)
+        {
+            return CreateType(nameSpace, name, attribs, typeof(T));
         }
 
         public TypePatcher GetType(string type)

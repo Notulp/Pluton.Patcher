@@ -10,15 +10,37 @@ namespace Pluton.Patcher.Reflection
     {
         internal TypeDefinition typeDefinition;
 
+        public bool Public {
+            get {
+                return typeDefinition.IsPublic;
+            }
+            set {
+                typeDefinition.IsPublic = value;
+                typeDefinition.IsNotPublic = !value;
+            }
+        }
+
         public TypePatcher(PatcherObject prnt, TypeDefinition typDef) : base(prnt)
         {
             typeDefinition = typDef;
             rootAssemblyPatcher = prnt.rootAssemblyPatcher;
         }
 
-        public FieldDefinition GetField(string field)
+        public FieldPatcher CreateField(string fieldName)
         {
-            return typeDefinition.GetField(field);
+            return CreateField(fieldName, typeof(object));
+        }
+
+        public FieldPatcher CreateField(string fieldname, Type fieldType)
+        {
+            var field = new FieldDefinition(fieldname, FieldAttributes.CompilerControlled | FieldAttributes.Public, rootAssemblyPatcher.mainModule.Import(fieldType));
+            typeDefinition.Fields.Add(field);
+            return GetField(fieldname);
+        }
+
+        public FieldPatcher GetField(string field)
+        {
+            return new FieldPatcher(this, typeDefinition.GetField(field));
         }
 
         public MethodPatcher GetMethod(string method)
