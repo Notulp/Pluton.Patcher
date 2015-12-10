@@ -3,45 +3,49 @@ using System.Collections.Generic;
 
 namespace Pluton.Patcher
 {
-    public class MethodPatch
+    public class MethodPatch : BasePatch
     {
         public Reflection.MethodPatcher TargetMethod;
 
-        public List<InstructionPatch> Patches = new List<InstructionPatch>();
+        public List<MethodInstruction> Instructions = new List<MethodInstruction>();
 
         public MethodPatch() {}
 
-        public bool Patch()
+        override public bool Patch()
         {
             try {
-                foreach (var patch in Patches) {
+                foreach (var patch in Instructions) {
                     switch (patch.InstructionType) {
-                    case InstructionType.Clear:
+                    case EInstructionType.Clear:
                         TargetMethod.Clear();
                         break;
 
-                    case InstructionType.Append:
+                    case EInstructionType.Append:
                         TargetMethod.Append(patch.Build());
                         break;
 
-                    case InstructionType.InsertAfter:
+                    case EInstructionType.InsertAfter:
                         TargetMethod.InsertAfter(patch.InsertOffset, patch.Build());
                         break;
 
-                    case InstructionType.InsertBefore:
+                    case EInstructionType.InsertBefore:
                         TargetMethod.InsertBefore(patch.InsertOffset, patch.Build());
                         break;
 
-                    case InstructionType.InsertBeforeRet:
+                    case EInstructionType.InsertBeforeRet:
                         TargetMethod.InsertBeforeRet(patch.Build());
                         break;
 
-                    case InstructionType.RemoveAt:
+                    case EInstructionType.RemoveAt:
                         TargetMethod.RemoveAt(patch.RemoveStart);
                         break;
 
-                    case InstructionType.RemoveRange:
+                    case EInstructionType.RemoveRange:
                         TargetMethod.RemoveRange(patch.RemoveStart, patch.RemoveEnd);
+                        break;
+
+                    case EInstructionType.SetVisibility:
+                        TargetMethod.Public = patch.Public;
                         break;
                     }
                 }
@@ -55,29 +59,35 @@ namespace Pluton.Patcher
             }
         }
 
-        public static MethodPatch ParseFromJSON(JSON.Object obj, Reflection.TypePatcher targetType)
+        new internal static BasePatch ParseFromJSON(JSON.Object obj, params object[] args)
         {
+            Reflection.TypePatcher targetType = args[0] as Reflection.TypePatcher;
+
             var patch = new MethodPatch();
+
             if (obj.ContainsKey("TargetMethodSigniture"))
                 patch.TargetMethod = targetType.GetMethod(obj["TargetMethod"].Str, obj["TargetMethodSigniture"].Str);
             else
                 patch.TargetMethod = targetType.GetMethod(obj["TargetMethod"].Str);
-            Console.WriteLine(" + " + obj["TargetMethod"].Str);
+            
+            Console.WriteLine(" + " + patch.TargetMethod.methodDefinition.GetSigniture());
+
             foreach (JSON.Value instru in obj["Instructions"].Array) {
-                var instrupatch = InstructionPatch.ParseFromJSON(instru.Obj, patch);
+                var instrupatch = MethodInstruction.ParseFromJSON(instru.Obj, patch);
+
                 switch (instrupatch.OperandType) {
-                case OperandType.Instruction:
+                case EOperandType.Instruction:
                     instrupatch.Operand = patch.TargetMethod.IlProc.Body.Instructions[instrupatch.ParamOrVarOffset];
                     break;
-                case OperandType.Variable:
+                case EOperandType.Variable:
                     instrupatch.Operand = patch.TargetMethod.IlProc.Body.Variables[instrupatch.ParamOrVarOffset];
                     break;
-                case OperandType.Parameter:
+                case EOperandType.Parameter:
                     instrupatch.Operand = patch.TargetMethod.IlProc.Body.Method.Parameters[instrupatch.ParamOrVarOffset];
                     break;
                 }
 
-                patch.Patches.Add(instrupatch);
+                patch.Instructions.Add(instrupatch);
             }
 
             return patch;
