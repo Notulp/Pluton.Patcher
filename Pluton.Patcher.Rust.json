@@ -18,7 +18,8 @@
 				"TargetField": "Version",
 				"Instructions": [{
 					"InstructionType": "SetVisibility",
-					"Public": true
+					"Public": true,
+					"Static": true
 				},
 				{
 					"InstructionType": "SetValue",
