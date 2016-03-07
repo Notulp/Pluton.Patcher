@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
     public class BasePatch : IPatch
     {

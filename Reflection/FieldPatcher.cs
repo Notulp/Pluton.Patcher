@@ -1,37 +1,43 @@
-﻿using System;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-
-namespace Pluton.Patcher.Reflection
+﻿namespace Pluton.Patcher.Reflection
 {
+    using Mono.Cecil;
+
     public class FieldPatcher : PatcherObject
     {
         internal FieldDefinition fieldDefinition;
 
-        public bool Public {
-            get {
+        public bool Public
+        {
+            get
+            {
                 return fieldDefinition.IsPublic;
             }
-            set {
+            set
+            {
                 fieldDefinition.IsPublic = value;
                 fieldDefinition.IsPrivate = !value;
             }
         }
 
         public bool Static {
-            get {
+            get
+            {
                 return fieldDefinition.IsStatic;
             }
-            set {
+            set
+            {
                 fieldDefinition.IsStatic = value;
             }
         }
 
-        public bool ReadOnly {
-            get {
+        public bool ReadOnly
+        {
+            get
+            {
                 return fieldDefinition.IsInitOnly;
             }
-            set {
+            set
+            {
                 fieldDefinition.IsInitOnly = value;
             }
         }
@@ -41,20 +47,11 @@ namespace Pluton.Patcher.Reflection
             fieldDefinition = fieldDef;
         }
 
-        public void SetPublic(bool value = true)
-        {
-            Public = value;
-        }
+        public void SetPublic(bool value = true) => Public = value;
 
-        public void SetStatic(bool value = true)
-        {
-            Static = value;
-        }
+        public void SetStatic(bool value = true) => Static = value;
 
-        public void SetReadOnly(bool value = true)
-        {
-            ReadOnly = value;
-        }
+        public void SetReadOnly(bool value = true) => ReadOnly = value;
 
         public void SetConstant(object value = null)
         {

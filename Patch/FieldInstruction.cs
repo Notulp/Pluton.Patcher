@@ -1,11 +1,10 @@
-﻿using System;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System;
     public class FieldInstruction : BaseInstruction
     {
         // TODO: Add support for static fields and constructors
-        // more predefined or remove the only one as iys just a hacky way to do it
+        // more predefined or remove the only one as its just a hacky way to do it
 
         public EInstructionType InstructionType;
         public EValueSource ValueSource;
@@ -19,8 +18,6 @@ namespace Pluton.Patcher
         public bool? Constant;
 
         public object Value;
-
-        public FieldInstruction() { }
 
         public static FieldInstruction ParseFromJSON(JSON.Object obj)
         {
@@ -41,7 +38,7 @@ namespace Pluton.Patcher
 
                 case EValueSource.PreDefined:
                     if (obj["Value"].Str == "%PatcherVersion%") {
-                        instruction.Value = Pluton.Patcher.MainClass.Version;
+                        instruction.Value = MainClass.Version;
                     }
                     break;
                 }

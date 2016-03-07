@@ -1,22 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Mono.Cecil;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System;
+    using System.Linq;
+
+    using Mono.Cecil;
+
 	static class MethodDefinitionExtensions
 	{
         public static string GetSigniture(this MethodDefinition self)
         {
-            return self.Name + "(" + String.Join(",", (from param in self.Parameters select param.ParameterType.Name)) + ")";
+            return $"{self.Name}({String.Join(",", (from param in self.Parameters select param.ParameterType.Name))})";
         }
 
 		public static MethodDefinition SetPublic(this MethodDefinition self, bool value)
 		{
 			if (self == null) {
-				throw new ArgumentNullException("self");
+                throw new ArgumentNullException(nameof(self));
 			}
 
 			self.IsPublic = value;
@@ -39,11 +38,8 @@ namespace Pluton.Patcher
                 lang.DecompileMethod(self, textoutput, options);
                 return textoutput.ToString();
             } catch (Exception ex) {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                Console.ForegroundColor = ConsoleColor.Gray;
-                return ex.Message;
+                MainClass.LogException(ex);
+                return ex.ToString();
             }
         }
 
@@ -56,11 +52,8 @@ namespace Pluton.Patcher
                 lang.DecompileMethod(self, textoutput, options);
                 return textoutput.ToString();
             } catch (Exception ex) {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                Console.ForegroundColor = ConsoleColor.Gray;
-                return ex.Message;
+                MainClass.LogException(ex);
+                return ex.ToString();
             }
         }
 	}

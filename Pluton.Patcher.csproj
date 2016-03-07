@@ -85,6 +85,7 @@
     <Compile Include="Patch\Base\IInstruction.cs" />
     <Compile Include="Patch\Base\IPatch.cs" />
     <Compile Include="Patch\AssemblyInstruction.cs" />
+    <Compile Include="MethodDB.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,53 +1,60 @@
-﻿using System;
-
-namespace Pluton.Patcher.JSON
+﻿namespace Pluton.Patcher.JSON
 {
     public class Value
     {
-        internal object value {
+        internal object value
+        {
             get;
             set;
         }
 
-        public Array Array {
+        public Array Array
+        {
             get;
             set;
         }
 
-        public bool Boolean {
+        public bool Boolean
+        {
             get;
             set;
         }
 
-        public double Number {
+        public double Number
+        {
             get;
             set;
         }
 
-        public JSON.Object Obj {
+        public JSON.Object Obj
+        {
             get;
             set;
         }
 
-        public Value Parent {
+        public Value Parent
+        {
             get;
             set;
         }
 
-        public string Str {
+        public string Str
+        {
             get;
             set;
         }
 
-        public ValueType Type {
+        public ValueType Type
+        {
             get;
             private set;
         }
 
-        public Value (Value value)
+        public Value(Value value)
         {
             Type = value.Type;
-            switch (this.Type) {
+            switch (Type)
+            {
             case ValueType.String:
                 Str = value.Str;
                 break;
@@ -55,12 +62,11 @@ namespace Pluton.Patcher.JSON
                 Number = value.Number;
                 break;
             case ValueType.Object:
-                if (value.Obj != null) {
-                    Obj = new Object (value.Obj);
-                }
+                if (value.Obj != null)
+                    Obj = new Object(value.Obj);
                 break;
             case ValueType.Array:
-                Array = new Array (value.Array);
+                Array = new Array(value.Array);
                 break;
             case ValueType.Boolean:
                 Boolean = value.Boolean;
@@ -103,10 +109,12 @@ namespace Pluton.Patcher.JSON
 
         public Value(JSON.Object obj)
         {
-            if (obj == null) {
+            if (obj == null)
+            {
                 Type = ValueType.Null;
             }
-            else {
+            else
+            {
                 Type = ValueType.Object;
                 Obj = obj;
                 value = obj;
@@ -115,15 +123,16 @@ namespace Pluton.Patcher.JSON
 
         public override string ToString()
         {
-            switch (Type) {
+            switch (Type)
+            {
             case ValueType.String:
                 return "\"" + Str + "\"";
             case ValueType.Number:
-                return Number.ToString ();
+                return Number.ToString();
             case ValueType.Object:
-                return Obj.ToString ();
+                return Obj.ToString();
             case ValueType.Array:
-                return Array.ToString ();
+                return Array.ToString();
             case ValueType.Boolean:
                 return (!Boolean) ? "false" : "true";
             case ValueType.Null:
@@ -133,25 +142,15 @@ namespace Pluton.Patcher.JSON
             }
         }
 
-        public static implicit operator Value(Array array) {
-            return new Value(array);
-        }
+        public static implicit operator Value(Array array) => new Value(array);
 
-        public static implicit operator Value(string str) {
-            return new Value(str);
-        }
+        public static implicit operator Value(string str) => new Value(str);
 
-        public static implicit operator Value(double number) {
-            return new Value(number);
-        }
+        public static implicit operator Value(double number) => new Value(number);
 
-        public static implicit operator Value(Object obj) {
-            return new Value(obj);
-        }
+        public static implicit operator Value(Object obj) => new Value(obj);
 
-        public static implicit operator Value(bool boolean) {
-            return new Value(boolean);
-        }
+        public static implicit operator Value(bool boolean) => new Value(boolean);
     }
 }
 

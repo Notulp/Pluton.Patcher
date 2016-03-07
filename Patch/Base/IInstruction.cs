@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
     public interface IInstruction
     {

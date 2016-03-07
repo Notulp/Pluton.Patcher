@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Pluton.Patcher.JSON
+﻿namespace Pluton.Patcher.JSON
 {
+    using System.Collections.Generic;
+
     public static class Extensions
     {
         public static T Pop<T> (this List<T> list)

@@ -1,20 +1,20 @@
-using System;
-using System.IO;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using Pluton.Patcher.Reflection;
-using System.Linq;
-using System.Collections.Generic;
-
 namespace Pluton.Patcher
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using Pluton.Patcher.Reflection;
+
     class MainClass
     {
         public static AssemblyPatcher rustAssembly;
-        public static string Version { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public static string Version { get; } = typeof(MainClass).Assembly.GetName().Version.ToString();
 
         internal static bool gendiffs = false;
         internal static bool newAssCS = false;
+
+        internal static bool LogToFile = false;
+        internal static string LogFile = "Pluton.Patcher.log";
 
         public static string GetHtmlDiff(string a, string b)
         {
@@ -26,23 +26,31 @@ namespace Pluton.Patcher
 
         public static int Main(string[] args)
         {
-            bool interactive = true;
-            if (args.Length > 0)
-                interactive = false;
+            bool interactive = args.Length > 0;
 
-            // TODO: new way doesn't generate differences yet, so add it
-            foreach (string arg in args)
-                if (arg.Contains("--generatediffs"))
-                    gendiffs = true;
+            gendiffs = args.Any(arg => arg == "--generatediffs" || arg == "-gd");
+
+            string logfile = (from arg in args
+                              where arg.StartsWith("--logFile:", StringComparison.Ordinal) || arg.StartsWith("-l:", StringComparison.Ordinal)
+                              select arg.Split(':').Last()).FirstOrDefault();
+            
+            LogFile = String.IsNullOrEmpty(logfile) ? logfile : LogFile;
+
+            LogToFile = String.IsNullOrEmpty(logfile);
+
+            if (gendiffs)
+                MethodDB.GetInstance();
 
             newAssCS = true;
 
-            Console.WriteLine(string.Format("[( Pluton Patcher v{0} )]", Version));
+            Log($"[( Pluton Patcher v{Version} )]");
 
             rustAssembly = AssemblyPatcher.GetPatcher("Assembly-CSharp.dll");
 
             if (rustAssembly.GetType("PlutonPatched") != null) {
-                Console.WriteLine("Assembly-CSharp.dll is already patched!");
+                LogError("Assembly-CSharp.dll is already patched!");
+                if (interactive)
+                    System.Threading.Thread.Sleep(250);
                 return (int)ExitCode.ACDLL_ALREADY_PATCHED;
             }
 
@@ -50,74 +58,70 @@ namespace Pluton.Patcher
                 JSON.Object jsonObj = JSON.Object.Parse(File.ReadAllText(json));
                 var assemblyPatch = AssemblyPatch.ParseFromJSON(jsonObj);
                 if (!assemblyPatch.Patch()) {
-                    Console.WriteLine("Failed to patch!");
+                    LogError("Failed to patch!");
+                    if (interactive)
+                        System.Threading.Thread.Sleep(250);
                     return (int)ExitCode.ACDLL_GENERIC_PATCH_ERR;
                 }
             }
-            //Check if patching is required
-            // TODO: add support for adding new Types/Fields/Methods via json
-            /*TypePatcher plutonClass = rustAssembly.GetType("PlutonPatched");
-            if (plutonClass == null) {
-                try {
-                    if (gendiffs) {
-                        string hash = String.Empty;
-                        using (var sha512 = new System.Security.Cryptography.SHA512Managed())
-                            hash = BitConverter.ToString(sha512.ComputeHash(File.ReadAllBytes("Assembly-CSharp.dll"))).Replace("-", "").ToLower();
 
-                        Directory.CreateDirectory("diffs");
+            if (gendiffs)
+            {
+                MethodDB.GetInstance().Save();
 
-                        string hashpath = "diffs" + Path.DirectorySeparatorChar + "lastHash";
+                string diffs = MethodDB.GetDifferences();
 
-                        if (File.Exists(hashpath)) newAssCS = hash != File.ReadAllText(hashpath);
+                if (String.IsNullOrEmpty(diffs))
+                    File.WriteAllText($"diffs-{DateTime.Now.ToShortDateString()}{DateTime.Now.ToShortTimeString()}.html", "<html><head><style>del,ins{text-decoration:none}ins{background-color:#0F0}del{color:#999;background-color:#F00}</style></head><body>" + diffs + "</body></html>");
+            }
 
-                        if (newAssCS) {
-                            foreach (var difffile in Directory.GetFiles("diffs")) {
-                                if (difffile.Contains(".htm")) {
-                                    string filename = Path.GetFileName(difffile);
-                                    string dirname = Path.GetDirectoryName(difffile);
-                                    Directory.CreateDirectory(Path.Combine(dirname, "old"));
-                                    File.Move(difffile, difffile.Replace(Path.Combine(dirname, filename), Path.Combine(dirname, "old", filename)));
-                                }
-                            }
-                        }
-
-                        if (gendiffs && newAssCS)
-                            File.WriteAllText(hashpath, hash);
-                    }
-
-                    Console.WriteLine("Patched Assembly-CSharp !");
-                } catch (Exception ex) {
-                    interactive = true;
-                    Console.WriteLine("An error occured while patching Assembly-CSharp :");
-                    Console.WriteLine();
-                    Console.WriteLine(ex.Message.ToString());
-
-                    //Normal handle for the others
-                    Console.WriteLine();
-                    Console.WriteLine(ex.StackTrace.ToString());
-                    Console.WriteLine();
-
-                    if (interactive) {
-                        Console.WriteLine("Press any key to continue...");
-                    }
-                    return (int)ExitCode.ACDLL_GENERIC_PATCH_ERR;
-                }
-            } else {
-                Console.WriteLine("Assembly-CSharp.dll is already patched!");
-                return (int)ExitCode.ACDLL_ALREADY_PATCHED;
-            }*/
-
-            //Successfully patched the server
-            Console.WriteLine("Completed !");
+            Log("Completed!");
 
             if (interactive)
                 System.Threading.Thread.Sleep(250);
 
             return (int)ExitCode.SUCCESS;
         }
+
+        public static void Log(string log)
+        {
+            if (LogToFile) File.AppendAllText(LogFile, log);
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write(log);
+        }
+
+        public static void LogLine(string log)
+        {
+            if (LogToFile) File.AppendAllText(LogFile, log);
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine(log);
+        }
+
+        public static void LogError(string log)
+        {
+            if (LogToFile) File.AppendAllText(LogFile, log);
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Write(log);
+        }
+
+        public static void LogErrorLine(string log)
+        {
+            if (LogToFile) File.AppendAllText(LogFile, log);
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(log);
+        }
+
+        public static void LogException(Exception ex)
+        {
+            LogErrorLine(ex.ToString());
+        }
     }
 
-    public enum ExitCode : int {
+    public enum ExitCode {
         SUCCESS = 0,
         DLL_MISSING = 10,
         DLL_READ_ERROR = 20,

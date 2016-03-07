@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Pluton.Patcher.Reflection
+﻿namespace Pluton.Patcher.Reflection
 {
     public class PatcherObject
     {

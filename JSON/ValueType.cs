@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Pluton.Patcher.JSON
+﻿namespace Pluton.Patcher.JSON
 {
     public enum ValueType
     {

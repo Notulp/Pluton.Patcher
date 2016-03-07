@@ -1,11 +1,10 @@
-﻿using System;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using System.Linq;
-using System.Collections.Generic;
-
-namespace Pluton.Patcher.Reflection
+﻿namespace Pluton.Patcher.Reflection
 {
+    using System;
+    using Mono.Cecil;
+    using System.Linq;
+    using System.Collections.Generic;
+
     public class TypePatcher : PatcherObject
     {
         internal TypeDefinition typeDefinition;

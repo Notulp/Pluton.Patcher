@@ -1,11 +1,10 @@
-﻿using System;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using System.Linq;
-using System.Collections.Generic;
-
-namespace Pluton.Patcher.Reflection
+﻿namespace Pluton.Patcher.Reflection
 {
+    using System;
+    using Mono.Cecil;
+    using System.Linq;
+    using System.Collections.Generic;
+
     public class AssemblyPatcher : PatcherObject
     {
         internal AssemblyDefinition assemblyDefinition;
@@ -13,11 +12,7 @@ namespace Pluton.Patcher.Reflection
 
         public static Dictionary<string, AssemblyPatcher> AssemblyCache = new Dictionary<string, AssemblyPatcher>();
 
-        internal Mono.Collections.Generic.Collection<TypeDefinition> Types {
-            get {
-                return mainModule.Types;
-            }
-        }
+        internal Mono.Collections.Generic.Collection<TypeDefinition> Types => mainModule.Types;
 
         public AssemblyPatcher(AssemblyDefinition assDef)
         {
@@ -41,15 +36,9 @@ namespace Pluton.Patcher.Reflection
             return result;
         }
 
-        internal static AssemblyPatcher FromFile(string filename)
-        {
-            return new AssemblyPatcher(AssemblyDefinition.ReadAssembly(filename));
-        }
+        internal static AssemblyPatcher FromFile(string filename) => new AssemblyPatcher(AssemblyDefinition.ReadAssembly(filename));
 
-        public TypePatcher CreateType(string fullname)
-        {
-            return CreateType(fullname, TypeAttributes.Public | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit, typeof(Object));
-        }
+        public TypePatcher CreateType(string fullname) => CreateType(fullname, TypeAttributes.Public | TypeAttributes.AnsiClass | TypeAttributes.BeforeFieldInit, typeof(Object));
 
         public TypePatcher CreateType(string fullname, TypeAttributes attribs, Type Base)
         {
@@ -62,15 +51,9 @@ namespace Pluton.Patcher.Reflection
             return CreateType(nameSpace, name, attribs, Base);
         }
 
-        public TypePatcher CreateType<T>(string fullname, TypeAttributes attribs)
-        {
-            return CreateType(fullname, attribs, typeof(T));
-        }
+        public TypePatcher CreateType<T>(string fullname, TypeAttributes attribs) => CreateType(fullname, attribs, typeof(T));
 
-        public TypePatcher CreateType(string nameSpace, string name)
-        {
-            return CreateType(nameSpace + "." + name);
-        }
+        public TypePatcher CreateType(string nameSpace, string name) => CreateType(nameSpace + "." + name);
 
         public TypePatcher CreateType(string nameSpace, string name, TypeAttributes attribs, Type Base)
         {
@@ -83,10 +66,7 @@ namespace Pluton.Patcher.Reflection
             return GetType(nameSpace + "." + name);
         }
 
-        public TypePatcher CreateType<T>(string nameSpace, string name, TypeAttributes attribs)
-        {
-            return CreateType(nameSpace, name, attribs, typeof(T));
-        }
+        public TypePatcher CreateType<T>(string nameSpace, string name, TypeAttributes attribs) => CreateType(nameSpace, name, attribs, typeof(T));
 
         public TypePatcher GetType(string type)
         {
@@ -96,20 +76,11 @@ namespace Pluton.Patcher.Reflection
             return new TypePatcher(this, t);
         }
 
-        public TypePatcher GetType(Func<IEnumerable<TypeDefinition>, TypeDefinition> func)
-        {
-            return new TypePatcher(this, func.Invoke(mainModule.GetTypes()));
-        }
+        public TypePatcher GetType(Func<IEnumerable<TypeDefinition>, TypeDefinition> func) => new TypePatcher(this, func.Invoke(mainModule.GetTypes()));
 
-        public MethodReference ImportMethod(MethodPatcher toImport)
-        {
-            return mainModule.Import(toImport.methodDefinition);
-        }
+        public MethodReference ImportMethod(MethodPatcher toImport) => mainModule.Import(toImport.methodDefinition);
 
-        public void Write(string file)
-        {
-            assemblyDefinition.Write(file);
-        }
+        public void Write(string file) => assemblyDefinition.Write(file);
     }
 }
 

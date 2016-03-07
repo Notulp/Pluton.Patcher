@@ -1,12 +1,12 @@
-﻿using System;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System;
+
     public class TypeInstruction : BaseInstruction
     {
         // TODO: 1. add support for creating nested types
         //          tho it's probably possible from AssemblyInstruction,
-        //          by setting the name like: TypeToCreateNestedTypeIn/NestedType'sName
+        //          by setting the name like: TypeToCreateNestedTypeIn/NestedTypesName
         //       2. add support to set the type of the field and return type of the method
         //          fields will be typeof(object) for now, method's are not supported yet, so throw exception
 
@@ -16,8 +16,6 @@ namespace Pluton.Patcher
 
         // the name of the field/method to be created
         public string Name;
-
-        public TypeInstruction() {}
 
         public static TypeInstruction ParseFromJSON(JSON.Object obj)
         {

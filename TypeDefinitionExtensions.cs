@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Mono.Cecil;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using Mono.Cecil;
+
 	static class Empty<T>
 	{
 		public static readonly T[] Array = new T [0];
@@ -16,7 +16,7 @@ namespace Pluton.Patcher
 		public static IEnumerable<MethodDefinition> GetConstructors(this TypeDefinition self)
 		{
 			if (self == null) {
-				throw new ArgumentNullException("self");
+				throw new ArgumentNullException(nameof(self));
 			}
 
 			if (!self.HasMethods) {
@@ -29,7 +29,7 @@ namespace Pluton.Patcher
 		public static MethodDefinition GetStaticConstructor(this TypeDefinition self)
 		{
 			if (self == null) {
-				throw new ArgumentNullException("self");
+				throw new ArgumentNullException(nameof(self));
 			}
 
 			if (!self.HasMethods) {
@@ -42,7 +42,7 @@ namespace Pluton.Patcher
 		public static IEnumerable<MethodDefinition> GetMethods(this TypeDefinition self)
 		{
 			if (self == null) {
-				throw new ArgumentNullException("self");
+				throw new ArgumentNullException(nameof(self));
 			}
 
 			if (!self.HasMethods) {
@@ -55,7 +55,7 @@ namespace Pluton.Patcher
 		public static MethodDefinition GetMethod(this TypeDefinition self, String name)
 		{
 			if (self == null) {
-				throw new ArgumentNullException("self");
+				throw new ArgumentNullException(nameof(self));
 			}
 
 			if (!self.HasMethods) {
@@ -68,7 +68,7 @@ namespace Pluton.Patcher
 		public static FieldDefinition GetField(this TypeDefinition self, String name)
 		{
 			if (self == null) {
-				throw new ArgumentNullException("self");
+				throw new ArgumentNullException(nameof(self));
 			}
 
 			if (!self.HasFields) {
@@ -81,7 +81,7 @@ namespace Pluton.Patcher
 		public static PropertyDefinition GetProperty(this TypeDefinition self, String name)
 		{
 			if (self == null) {
-				throw new ArgumentNullException("self");
+				throw new ArgumentNullException(nameof(self));
 			}
 
 			if (!self.HasProperties) {
@@ -94,7 +94,7 @@ namespace Pluton.Patcher
 		public static TypeDefinition GetNestedType(this TypeDefinition self, String name)
 		{
 			if (self == null) {
-				throw new ArgumentNullException("self");
+				throw new ArgumentNullException(nameof(self));
 			}
 
 			if (!self.HasNestedTypes) {

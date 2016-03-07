@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System;
+    using System.Collections.Generic;
+
     public class MethodPatch : BasePatch
     {
         public Reflection.MethodPatcher TargetMethod;
 
         public List<MethodInstruction> Instructions = new List<MethodInstruction>();
 
-        public MethodPatch() {}
-
         override public bool Patch()
         {
             try {
+                MethodDB.StoreMethod(TargetMethod, true);
+
                 foreach (var patch in Instructions) {
                     switch (patch.InstructionType) {
                     case EInstructionType.Clear:
@@ -49,19 +49,19 @@ namespace Pluton.Patcher
                         break;
                     }
                 }
+
+                MethodDB.StoreMethod(TargetMethod, false);
                 return true;
             } catch (Exception ex) {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                Console.ForegroundColor = ConsoleColor.Gray;
+                MainClass.LogErrorLine(TargetMethod.FriendlyName);
+                MainClass.LogException(ex);
                 return false;
             }
         }
 
         new internal static BasePatch ParseFromJSON(JSON.Object obj, params object[] args)
         {
-            Reflection.TypePatcher targetType = args[0] as Reflection.TypePatcher;
+            var targetType = args[0] as Reflection.TypePatcher;
 
             var patch = new MethodPatch();
 
@@ -70,7 +70,7 @@ namespace Pluton.Patcher
             else
                 patch.TargetMethod = targetType.GetMethod(obj["TargetMethod"].Str);
             
-            Console.WriteLine(" + " + patch.TargetMethod.methodDefinition.GetSigniture());
+            MainClass.LogLine(" + " + patch.TargetMethod.methodDefinition.GetSigniture());
 
             foreach (JSON.Value instru in obj["Instructions"].Array) {
                 var instrupatch = MethodInstruction.ParseFromJSON(instru.Obj, patch);

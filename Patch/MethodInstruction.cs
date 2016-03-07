@@ -1,10 +1,8 @@
-﻿using System;
-using Mono.Cecil;
-using Mono.Cecil.Cil;
-using System.Linq;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System;
+    using Mono.Cecil.Cil;
+
     public class MethodInstruction : BaseInstruction
     {
         // TODO: Add support for adding try-catch-finally, switch? (should be possible already, but could make it easier), using statments
@@ -21,17 +19,15 @@ namespace Pluton.Patcher
 
         public int ParamOrVarOffset = -1;
 
-        public int RemoveStart = -1, RemoveEnd = -1, InsertOffset = -1;
+        public int RemoveStart  = -1,
+                   RemoveEnd    = -1,
+                   InsertOffset = -1;
 
         public bool Public = true;
 
         public static MethodInstruction ParseFromJSON(JSON.Object instru, MethodPatch targetMethod)
         {
             var patch = new MethodInstruction();
-
-            patch.Instruction = Instruction.Create(OpCodes.Ret);
-
-            patch.OpCode = (OpCode)typeof(OpCodes).GetField(instru["OpCode"].Str).GetValue(typeof(OpCodes));
 
             patch.InstructionType = (EInstructionType)Enum.Parse(typeof(EInstructionType), instru["InstructionType"].Str);
 
@@ -56,6 +52,10 @@ namespace Pluton.Patcher
                 patch.InsertOffset = Int32.Parse(instru["InsertOffset"].Str);
                 break;
             }
+
+            patch.Instruction = Instruction.Create(OpCodes.Ret);
+
+            patch.OpCode = (OpCode)typeof(OpCodes).GetField(instru["OpCode"].Str).GetValue(typeof(OpCodes));
 
             patch.OperandType = (EOperandType)Enum.Parse(typeof(EOperandType), instru["OperandType"].Str);
 
@@ -107,10 +107,6 @@ namespace Pluton.Patcher
 
             case EOperandType.String:
                 patch.Operand = instru["Operand"].Str;
-                break;
-
-            case EOperandType.None:
-            default:
                 break;
             }
 

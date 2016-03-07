@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System;
+
     public class AssemblyInstruction : BaseInstruction
     {
         public EInstructionType InstructionType;

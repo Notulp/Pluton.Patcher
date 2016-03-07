@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System.Collections.Generic;
+
     public class FieldPatch : BasePatch
     {
-        public FieldPatch() {}
-
         public Reflection.FieldPatcher TargetField;
 
         public List<FieldInstruction> Instructions = new List<FieldInstruction>();
@@ -32,7 +29,7 @@ namespace Pluton.Patcher
 
         new internal static FieldPatch ParseFromJSON(JSON.Object obj, params object[] args)
         {
-            Reflection.TypePatcher targetType = args[0] as Reflection.TypePatcher;
+            var targetType = args[0] as Reflection.TypePatcher;
 
             var patch = new FieldPatch();
 

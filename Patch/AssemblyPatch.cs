@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Pluton.Patcher
+﻿namespace Pluton.Patcher
 {
+    using System.Collections.Generic;
+
     public class AssemblyPatch : BasePatch
     {
         public Reflection.AssemblyPatcher TargetAssembly;
@@ -13,8 +12,6 @@ namespace Pluton.Patcher
 
         public List<AssemblyInstruction> Instructions = new List<AssemblyInstruction>();
 
-        public AssemblyPatch() {}
-
         override public bool Patch()
         {
             foreach (var patch in Patches) {
@@ -23,7 +20,7 @@ namespace Pluton.Patcher
             }
             foreach (var instruction in Instructions) {
                 if (instruction.InstructionType == AssemblyInstruction.EInstructionType.WriteToFile) {
-                    Console.WriteLine("-> Write assembly to file: " + instruction.Name);
+                    MainClass.LogLine("-> Write assembly to file: " + instruction.Name);
                     TargetAssembly.Write(instruction.Name);
                 }
             }
@@ -40,10 +37,10 @@ namespace Pluton.Patcher
 
             if (obj.ContainsKey("Instructions")) {
                 foreach (var inst in obj["Instructions"].Array) {
-                    AssemblyInstruction instruction = (AssemblyInstruction)AssemblyInstruction.ParseFromJSON(inst.Obj);
+                    var instruction = (AssemblyInstruction)AssemblyInstruction.ParseFromJSON(inst.Obj);
 
                     if (instruction.InstructionType == AssemblyInstruction.EInstructionType.CreateType) {
-                        Console.WriteLine("-> Creating type: " + instruction.Name);
+                        MainClass.LogLine("-> Creating type: " + instruction.Name);
                         patch.TargetAssembly.CreateType(instruction.Name);
                     }
 

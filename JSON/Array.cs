@@ -1,78 +1,84 @@
-﻿using System;
-using System.Text;
-using System.Collections;
-using System.Collections.Generic;
-
-namespace Pluton.Patcher.JSON
+﻿namespace Pluton.Patcher.JSON
 {
+    using System.Text;
+    using System.Collections;
+    using System.Collections.Generic;
+
     public class Array : IEnumerable<Value>, IEnumerable
     {
-        private readonly List<Value> values = new List<Value> ();
+        readonly List<Value> values = new List<Value>();
 
         public int Length => values.Count;
 
-        public Value this [int index] {
-            get {
-                return values [index];
-            }
-            set {
-                values [index] = value;
-            }
-        }
-
-        public Array () {}
-
-        public Array (JSON.Array other)
+        public Value this[int index]
         {
-            foreach (Value current in other.values) {
-                values.Add (new Value (current));
+            get
+            {
+                return values[index];
+            }
+            set
+            {
+                values[index] = value;
             }
         }
 
-        public static JSON.Array Parse (string jsonString)
+        public Array() { }
+
+        public Array(Array other)
         {
-            JSON.Object obj = JSON.Object.Parse ("{ \"array\" :" + jsonString + '}');
-            return (obj != null) ? obj.GetValue ("array").Array : null;
+            foreach (Value current in other.values)
+            {
+                values.Add(new Value(current));
+            }
         }
 
-        public void Add (Value value) => values.Add (value);
-
-        public void Clear () => values.Clear ();
-
-        IEnumerator IEnumerable.GetEnumerator () => values.GetEnumerator ();
-
-        public IEnumerator<Value> GetEnumerator ()
+        public static Array Parse(string jsonString)
         {
-            return values.GetEnumerator ();
+            Object obj = Object.Parse("{ \"array\" :" + jsonString + '}');
+            return (obj != null) ? obj.GetValue("array").Array : null;
         }
 
-        public void Remove (int index)
+        public void Add(Value value) => values.Add(value);
+
+        public void Clear() => values.Clear();
+
+        IEnumerator IEnumerable.GetEnumerator() => values.GetEnumerator();
+
+        public IEnumerator<Value> GetEnumerator()
         {
-            if (index >= 0 && index < values.Count) {
-                values.RemoveAt (index);
-            }
+            return values.GetEnumerator();
         }
 
-        public override string ToString ()
+        public void Remove(int index)
         {
-            StringBuilder stringBuilder = new StringBuilder ();
-            stringBuilder.Append ('[');
-            foreach (Value current in values) {
-                stringBuilder.Append (current.ToString ());
-                stringBuilder.Append (',');
+            if (index >= 0 && index < values.Count)
+            {
+                values.RemoveAt(index);
             }
-            if (values.Count > 0) {
-                stringBuilder.Remove (stringBuilder.Length - 1, 1);
-            }
-            stringBuilder.Append (']');
-            return stringBuilder.ToString ();
         }
 
-        public static Array operator + (Array lhs, Array rhs) {
-            Array array = new Array (lhs);
-            foreach (Value current in rhs.values) {
-                array.Add (current);
+        public override string ToString()
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.Append('[');
+            foreach (Value current in values)
+            {
+                stringBuilder.Append(current.ToString());
+                stringBuilder.Append(',');
             }
+            if (values.Count > 0)
+                stringBuilder.Remove(stringBuilder.Length - 1, 1);
+
+            stringBuilder.Append(']');
+            return stringBuilder.ToString();
+        }
+
+        public static Array operator +(Array lhs, Array rhs)
+        {
+            var array = new Array(lhs);
+            foreach (Value current in rhs.values)
+                array.Add(current);
+
             return array;
         }
     }
