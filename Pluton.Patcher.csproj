@@ -93,9 +93,4 @@
     <Folder Include="Patch\" />
     <Folder Include="Patch\Base\" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Pluton.Patcher.Rust.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
 </Project>
