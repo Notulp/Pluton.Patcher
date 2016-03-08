@@ -3,7 +3,7 @@ namespace Pluton.Patcher
     using System;
     using System.IO;
     using System.Linq;
-    using Pluton.Patcher.Reflection;
+    using Reflection;
 
     class MainClass
     {
@@ -36,7 +36,7 @@ namespace Pluton.Patcher
             
             LogFile = String.IsNullOrEmpty(logfile) ? logfile : LogFile;
 
-            LogToFile = String.IsNullOrEmpty(logfile);
+            LogToFile = !String.IsNullOrEmpty(logfile);
 
             if (gendiffs)
                 MethodDB.GetInstance();
