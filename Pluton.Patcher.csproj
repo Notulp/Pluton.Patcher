@@ -38,13 +38,16 @@
     <Reference Include="System" />
     <Reference Include="ILSpy">
       <HintPath>ref\ILSpy.exe</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ICSharpCode.Decompiler">
       <HintPath>ref\ICSharpCode.Decompiler.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="Mono.Cecil">
       <HintPath>ref\Mono.Cecil.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="Assembly-CSharp">
@@ -54,6 +57,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\..\dlls\clean\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
