@@ -93,7 +93,7 @@ namespace Pluton.Patcher
 
         public static void LogLine(string log)
         {
-            if (LogToFile) File.AppendAllText(LogFile, log);
+            if (LogToFile) File.AppendAllText(LogFile, log + Environment.NewLine);
 
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(log);
@@ -109,7 +109,7 @@ namespace Pluton.Patcher
 
         public static void LogErrorLine(string log)
         {
-            if (LogToFile) File.AppendAllText(LogFile, log);
+            if (LogToFile) File.AppendAllText(LogFile, log + Environment.NewLine);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(log);
