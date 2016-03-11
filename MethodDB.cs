@@ -5,7 +5,7 @@
     using System.Collections;
     using System.Linq;
     using System.Runtime.Serialization.Formatters.Binary;
-    using Pluton.Patcher.Reflection;
+    using Reflection;
     using System.Security.Cryptography;
 
     public class MethodDB
@@ -120,7 +120,7 @@
 
         #region methodspecific
 
-        public static bool ChechMethod(MethodPatcher method, bool original)
+        public static bool CheckMethod(MethodPatcher method, bool original)
         {
             if (TABLE == 1) return true;
 
@@ -151,7 +151,11 @@
             return result;
         }
 
-        public static void StoreMethod(MethodPatcher method, bool original) => instance.Add(TABLE, GetKeyName(method, original), method.methodDefinition.PrintCSharp());
+        public static void StoreMethod(MethodPatcher method, bool original)
+        {
+            if (MainClass.gendiffs)
+                instance.Add(TABLE, GetKeyName(method, original), method.methodDefinition.PrintCSharp());
+        }
 
         static string GetKeyName(MethodPatcher method, bool original) => $"{method.FriendlyName}{(original ? orgPrfx : edtdPrfx)}";
 
