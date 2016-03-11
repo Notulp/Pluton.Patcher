@@ -50,15 +50,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Web" />
-    <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\dlls\patched\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\dlls\clean\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
