@@ -71,7 +71,7 @@ namespace Pluton.Patcher
 
                 string diffs = MethodDB.GetDifferences();
 
-                if (String.IsNullOrEmpty(diffs))
+                if (!String.IsNullOrEmpty(diffs))
                     File.WriteAllText($"diffs-{DateTime.Now.ToShortDateString()}{DateTime.Now.ToShortTimeString()}.html".Replace('\\', '_').Replace('/', '_'), "<html><head><style>del,ins{text-decoration:none}ins{background-color:#0F0}del{color:#999;background-color:#F00}</style></head><body>" + diffs + "</body></html>");
             }
 
