@@ -34,7 +34,7 @@ namespace Pluton.Patcher
                               where arg.StartsWith("--logFile:", StringComparison.Ordinal) || arg.StartsWith("-l:", StringComparison.Ordinal)
                               select arg.Split(':').Last()).FirstOrDefault();
             
-            LogFile = String.IsNullOrEmpty(logfile) ? logfile : LogFile;
+            LogFile = !String.IsNullOrEmpty(logfile) ? logfile : LogFile;
 
             LogToFile = !String.IsNullOrEmpty(logfile);
 
