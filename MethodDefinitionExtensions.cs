@@ -33,9 +33,8 @@
         {
             try {
                 var textoutput = new ICSharpCode.Decompiler.PlainTextOutput();
-                var options = new ICSharpCode.ILSpy.DecompilationOptions();
-                var lang = new ICSharpCode.ILSpy.ILLanguage(true);
-                lang.DecompileMethod(self, textoutput, options);
+                var disasm = new ICSharpCode.Decompiler.Disassembler.ReflectionDisassembler(textoutput, true, new System.Threading.CancellationToken());
+                disasm.DisassembleMethod(self);
                 return textoutput.ToString();
             } catch (Exception ex) {
                 MainClass.LogException(ex);
@@ -47,9 +46,13 @@
         {
             try {
                 var textoutput = new ICSharpCode.Decompiler.PlainTextOutput();
-                var options = new ICSharpCode.ILSpy.DecompilationOptions();
-                var lang = new ICSharpCode.ILSpy.CSharpLanguage();
-                lang.DecompileMethod(self, textoutput, options);
+                var builder = new ICSharpCode.Decompiler.Ast.AstBuilder(new ICSharpCode.Decompiler.DecompilerContext(self.DeclaringType.Module) {
+                    CancellationToken = new System.Threading.CancellationToken(),
+                    CurrentType = self.DeclaringType,
+                    Settings = new ICSharpCode.Decompiler.DecompilerSettings()
+                });
+                builder.AddMethod(self);
+                builder.GenerateCode(textoutput);
                 return textoutput.ToString();
             } catch (Exception ex) {
                 MainClass.LogException(ex);
