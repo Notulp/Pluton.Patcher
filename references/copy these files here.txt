@@ -1,0 +1,4 @@
+ICSharpCode.Decompiler.dll
+ICSharpCode.NRefactory.CSharp.dll
+ICSharpCode.NRefactory.dll
+Mono.Cecil.dll
