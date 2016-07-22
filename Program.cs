@@ -55,13 +55,18 @@ namespace Pluton.Patcher
             }
 
             foreach (var json in Directory.GetFiles("./", "*.json")) {
-                JSON.Object jsonObj = JSON.Object.Parse(File.ReadAllText(json));
-                var assemblyPatch = AssemblyPatch.ParseFromJSON(jsonObj);
-                if (!assemblyPatch.Patch()) {
-                    LogError("Failed to patch!");
-                    if (interactive)
-                        System.Threading.Thread.Sleep(250);
-                    return (int)ExitCode.ACDLL_GENERIC_PATCH_ERR;
+                JSON.Array jsonArr = JSON.Array.Parse(File.ReadAllText(json));
+                foreach (JSON.Value jsonElmnt in jsonArr)
+                {
+                    JSON.Object jsonObj = jsonElmnt.Obj;
+                    var assemblyPatch = AssemblyPatch.ParseFromJSON(jsonObj);
+                    if (!assemblyPatch.Patch())
+                    {
+                        LogError("Failed to patch!");
+                        if (interactive)
+                            System.Threading.Thread.Sleep(250);
+                        return (int)ExitCode.ACDLL_GENERIC_PATCH_ERR;
+                    }
                 }
             }
 
