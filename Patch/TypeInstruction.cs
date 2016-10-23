@@ -1,41 +1,39 @@
-﻿namespace Pluton.Patcher
-{
-    using System;
+﻿namespace Pluton.Patcher {
+	using System;
 
-    public class TypeInstruction : BaseInstruction
-    {
-        // TODO: 1. add support for creating nested types
-        //          tho it's probably possible from AssemblyInstruction,
-        //          by setting the name like: TypeToCreateNestedTypeIn/NestedTypesName
-        //       2. add support to set the type of the field and return type of the method
-        //          fields will be typeof(object) for now, method's are not supported yet, so throw exception
+	public class TypeInstruction : BaseInstruction {
+		// TODO: 1. add support for creating nested types
+		//          tho it's probably possible from AssemblyInstruction,
+		//          by setting the name like: TypeToCreateNestedTypeIn/NestedTypesName
+		//       2. add support to set the type of the field and return type of the method
+		//          fields will be typeof(object) for now, method's are not supported yet, so throw exception
 
-        public EInstructionType InstructionType;
+		public EInstructionType InstructionType;
 
-        public bool Public = true;
+		public bool Public = true;
 
-        // the name of the field/method to be created
-        public string Name;
+		// the name of the field/method to be created
+		public string Name;
 
-        public static TypeInstruction ParseFromJSON(JSON.Object obj)
-        {
-            var instruction = new TypeInstruction();
+		public static TypeInstruction ParseFromJSON(JSON.Object obj) {
+			var instruction = new TypeInstruction();
 
-            instruction.InstructionType = (EInstructionType)Enum.Parse(typeof(EInstructionType), obj["InstructionType"].Str, true);
+			instruction.InstructionType = (EInstructionType)Enum.Parse(typeof(EInstructionType),
+			                                                           obj["InstructionType"].Str,
+			                                                           true);
 
-            instruction.Name = obj.ContainsKey("Name") ? obj["Name"].Str : null;
+			instruction.Name = obj.ContainsKey("Name") ? obj["Name"].Str : null;
 
-            instruction.Public = obj.ContainsKey("Public") ? obj["Public"].Boolean : instruction.Public;
+			instruction.Public = obj.ContainsKey("Public") ? obj["Public"].Boolean : instruction.Public;
 
-            return instruction;
-        }
+			return instruction;
+		}
 
-        public enum EInstructionType
-        {
-            CreateMethod,
-            CreateField,
-            SetVisibility
-        }
-    }
+		public enum EInstructionType {
+			CreateMethod,
+			CreateField,
+			SetVisibility
+		}
+	}
 }
 

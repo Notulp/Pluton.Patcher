@@ -1,69 +1,67 @@
-﻿namespace Pluton.Patcher
-{
-    using System;
-    public class FieldInstruction : BaseInstruction
-    {
-        // TODO: Add support for static fields and constructors
-        // more predefined or remove the only one as its just a hacky way to do it
+﻿namespace Pluton.Patcher {
+	using System;
 
-        public EInstructionType InstructionType;
-        public EValueSource ValueSource;
+	public class FieldInstruction : BaseInstruction {
+		// TODO: Add support for static fields and constructors
+		// more predefined or remove the only one as its just a hacky way to do it
 
-        public bool? Public;
+		public EInstructionType InstructionType;
+		public EValueSource ValueSource;
 
-        public bool? Static;
+		public bool? Public;
 
-        public bool? ReadOnly;
+		public bool? Static;
 
-        public bool? Constant;
+		public bool? ReadOnly;
 
-        public object Value;
+		public bool? Constant;
 
-        public static FieldInstruction ParseFromJSON(JSON.Object obj)
-        {
-            var instruction = new FieldInstruction();
+		public object Value;
 
-            instruction.InstructionType = (EInstructionType)Enum.Parse(typeof(EInstructionType), obj["InstructionType"].Str, true);
-            if (obj.ContainsKey("ValueSource")) {
-                instruction.ValueSource = (EValueSource)Enum.Parse(typeof(EValueSource), obj["ValueSource"].Str, true);
+		public static FieldInstruction ParseFromJSON(JSON.Object obj) {
+			var instruction = new FieldInstruction();
 
-                switch (instruction.ValueSource) {
-                case EValueSource.StaticField:
-                case EValueSource.TypeConstruction:
-                    throw new NotImplementedException(instruction.ValueSource.ToString() + " as ValueSource is not yet implemented.");
+			instruction.InstructionType = (EInstructionType)Enum.Parse(typeof(EInstructionType),
+			                                                           obj["InstructionType"].Str,
+			                                                           true);
+			if (obj.ContainsKey("ValueSource")) {
+				instruction.ValueSource = (EValueSource)Enum.Parse(typeof(EValueSource), obj["ValueSource"].Str, true);
 
-                case EValueSource.Custom:
-                    instruction.Value = obj.ContainsKey("Value") ? obj["Value"].value : null;
-                    break;
+				switch (instruction.ValueSource) {
+					case EValueSource.StaticField:
+					case EValueSource.TypeConstruction:
+						throw new NotImplementedException(instruction.ValueSource.ToString() + " as ValueSource is not yet implemented.");
 
-                case EValueSource.PreDefined:
-                    if (obj["Value"].Str == "%PatcherVersion%") {
-                        instruction.Value = MainClass.Version;
-                    }
-                    break;
-                }
-            }
-            instruction.Public = obj.ContainsKey("Public") ? obj["Public"].Boolean : instruction.Public;
-            instruction.Static = obj.ContainsKey("Static") ? obj["Static"].Boolean : instruction.Static;
-            instruction.ReadOnly = obj.ContainsKey("ReadOnly") ? obj["ReadOnly"].Boolean : instruction.ReadOnly;
-            instruction.Constant = obj.ContainsKey("Constant") ? obj["Constant"].Boolean : instruction.Constant;
+					case EValueSource.Custom:
+						instruction.Value = obj.ContainsKey("Value") ? obj["Value"].value : null;
+						break;
 
-            return instruction;
-        }
+					case EValueSource.PreDefined:
+						if (obj["Value"].Str == "%PatcherVersion%") {
+							instruction.Value = MainClass.Version;
+						}
+						break;
+				}
+			}
+			instruction.Public = obj.ContainsKey("Public") ? obj["Public"].Boolean : instruction.Public;
+			instruction.Static = obj.ContainsKey("Static") ? obj["Static"].Boolean : instruction.Static;
+			instruction.ReadOnly = obj.ContainsKey("ReadOnly") ? obj["ReadOnly"].Boolean : instruction.ReadOnly;
+			instruction.Constant = obj.ContainsKey("Constant") ? obj["Constant"].Boolean : instruction.Constant;
 
-        public enum EInstructionType
-        {
-            SetValue,
-            SetVisibility
-        }
+			return instruction;
+		}
 
-        public enum EValueSource
-        {
-            StaticField,
-            TypeConstruction,
-            Custom,
-            PreDefined
-        }
-    }
+		public enum EInstructionType {
+			SetValue,
+			SetVisibility
+		}
+
+		public enum EValueSource {
+			StaticField,
+			TypeConstruction,
+			Custom,
+			PreDefined
+		}
+	}
 }
 

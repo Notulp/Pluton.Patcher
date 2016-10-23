@@ -1,12 +1,10 @@
-namespace Pluton.Patcher
-{
+namespace Pluton.Patcher {
     using System;
     using System.IO;
     using System.Linq;
     using Reflection;
 
-    class MainClass
-    {
+    class MainClass {
         public static AssemblyPatcher rustAssembly;
         public static string Version { get; } = typeof(MainClass).Assembly.GetName().Version.ToString();
 
@@ -16,16 +14,14 @@ namespace Pluton.Patcher
         internal static bool LogToFile = false;
         internal static string LogFile = "Pluton.Patcher.log";
 
-        public static string GetHtmlDiff(string a, string b)
-        {
+        public static string GetHtmlDiff(string a, string b) {
             var dmp = new DiffMatchPatch.diff_match_patch();
             var diffmain = dmp.diff_main(a, b);
             dmp.diff_cleanupSemantic(diffmain);
             return "<div id='hook_diff'><pre>" + dmp.diff_prettyHtml(diffmain) + "</pre></div>";
         }
 
-        public static int Main(string[] args)
-        {
+        public static int Main(string[] args) {
             bool interactive = args.Length > 0;
 
             gendiffs = args.Any(arg => arg == "--generatediffs" || arg == "-gd");
@@ -70,8 +66,7 @@ namespace Pluton.Patcher
                 }
             }
 
-            if (gendiffs)
-            {
+            if (gendiffs) {
                 MethodDB.GetInstance().Save();
 
                 string diffs = MethodDB.GetDifferences();
@@ -88,40 +83,35 @@ namespace Pluton.Patcher
             return (int)ExitCode.SUCCESS;
         }
 
-        public static void Log(string log)
-        {
+        public static void Log(string log) {
             if (LogToFile) File.AppendAllText(LogFile, log);
 
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write(log);
         }
 
-        public static void LogLine(string log)
-        {
+        public static void LogLine(string log) {
             if (LogToFile) File.AppendAllText(LogFile, log + Environment.NewLine);
 
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine(log);
         }
 
-        public static void LogError(string log)
-        {
+        public static void LogError(string log) {
             if (LogToFile) File.AppendAllText(LogFile, log);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write(log);
         }
 
-        public static void LogErrorLine(string log)
-        {
+        public static void LogErrorLine(string log) {
             if (LogToFile) File.AppendAllText(LogFile, log + Environment.NewLine);
 
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(log);
         }
 
-        public static void LogException(Exception ex)
-        {
+        public static void LogException(Exception ex) {
             LogErrorLine(ex.ToString());
         }
     }
