@@ -1,5 +1,7 @@
-﻿namespace Pluton.Patcher.JSON {
-	public class Value {
+﻿namespace Pluton.Patcher.JSON
+{
+	public class Value
+	{
 		internal object value {
 			get;
 			set;
@@ -40,7 +42,8 @@
 			private set;
 		}
 
-		public Value(Value value) {
+		public Value(Value value)
+		{
 			Type = value.Type;
 			switch (Type) {
 				case ValueType.String:
@@ -62,35 +65,41 @@
 			}
 		}
 
-		public Value(bool boolean) {
+		public Value(bool boolean)
+		{
 			Type = ValueType.Boolean;
 			Boolean = boolean;
 			value = boolean;
 		}
 
-		public Value(Array array) {
+		public Value(Array array)
+		{
 			Type = ValueType.Array;
 			Array = array;
 			value = array;
 		}
 
-		public Value(double number) {
+		public Value(double number)
+		{
 			Type = ValueType.Number;
 			Number = number;
 			value = number;
 		}
 
-		public Value(string str) {
+		public Value(string str)
+		{
 			Type = ValueType.String;
 			Str = str;
 			value = str;
 		}
 
-		public Value(ValueType type) {
+		public Value(ValueType type)
+		{
 			Type = type;
 		}
 
-		public Value(JSON.Object obj) {
+		public Value(JSON.Object obj)
+		{
 			if (obj == null) {
 				Type = ValueType.Null;
 			} else {
@@ -100,7 +109,8 @@
 			}
 		}
 
-		public override string ToString() {
+		public override string ToString()
+		{
 			switch (Type) {
 				case ValueType.String:
 					return "\"" + Str + "\"";

@@ -1,12 +1,15 @@
-﻿namespace Pluton.Patcher {
+﻿namespace Pluton.Patcher
+{
 	using System.Collections.Generic;
 
-	public class FieldPatch : BasePatch {
+	public class FieldPatch : BasePatch
+	{
 		public Reflection.FieldPatcher TargetField;
 
 		public List<FieldInstruction> Instructions = new List<FieldInstruction>();
 
-		override public bool Patch() {
+		override public bool Patch()
+		{
 			foreach (var patch in Instructions) {
 				if (patch.Constant != null) {
 					TargetField.SetConstant(patch.Value);
@@ -24,7 +27,8 @@
 			return true;
 		}
 
-		new internal static FieldPatch ParseFromJSON(JSON.Object obj, params object[] args) {
+		new internal static FieldPatch ParseFromJSON(JSON.Object obj, params object[] args)
+		{
 			var targetType = args[0] as Reflection.TypePatcher;
 
 			var patch = new FieldPatch();

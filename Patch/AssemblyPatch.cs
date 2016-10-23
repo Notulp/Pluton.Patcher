@@ -1,7 +1,9 @@
-﻿namespace Pluton.Patcher {
+﻿namespace Pluton.Patcher
+{
 	using System.Collections.Generic;
 
-	public class AssemblyPatch : BasePatch {
+	public class AssemblyPatch : BasePatch
+	{
 		public Reflection.AssemblyPatcher TargetAssembly;
 
 		public string FileName;
@@ -10,7 +12,8 @@
 
 		public List<AssemblyInstruction> Instructions = new List<AssemblyInstruction>();
 
-		override public bool Patch() {
+		override public bool Patch()
+		{
 			foreach (var patch in Patches) {
 				if (!patch.Patch())
 					return false;
@@ -24,7 +27,8 @@
 			return true;
 		}
 
-		public static AssemblyPatch ParseFromJSON(JSON.Object obj) {
+		public static AssemblyPatch ParseFromJSON(JSON.Object obj)
+		{
 			var patch = new AssemblyPatch();
 
 			patch.TargetAssembly = Reflection.AssemblyPatcher.GetPatcher(obj["TargetAssembly"].Str);

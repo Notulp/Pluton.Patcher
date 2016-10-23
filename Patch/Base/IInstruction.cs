@@ -1,5 +1,7 @@
-﻿namespace Pluton.Patcher {
-	public interface IInstruction {
+﻿namespace Pluton.Patcher
+{
+	public interface IInstruction
+	{
 	}
 }
 

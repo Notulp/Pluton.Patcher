@@ -1,5 +1,7 @@
-﻿namespace Pluton.Patcher.JSON {
-	public enum ValueType {
+﻿namespace Pluton.Patcher.JSON
+{
+	public enum ValueType
+	{
 		String,
 		Number,
 		Object,

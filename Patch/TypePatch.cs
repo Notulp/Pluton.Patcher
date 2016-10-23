@@ -1,8 +1,10 @@
-﻿namespace Pluton.Patcher {
+﻿namespace Pluton.Patcher
+{
 	using System;
 	using System.Collections.Generic;
 
-	public class TypePatch : BasePatch {
+	public class TypePatch : BasePatch
+	{
 		// TODO: Add support to create a Method
 
 		public Reflection.TypePatcher TargetType;
@@ -10,7 +12,8 @@
 		public List<BasePatch> Patches = new List<BasePatch>();
 		public List<TypeInstruction> Instructions = new List<TypeInstruction>();
 
-		override public bool Patch() {
+		override public bool Patch()
+		{
 			foreach (var patch in Patches) {
 				if (!patch.Patch())
 					return false;
@@ -22,7 +25,8 @@
 			return true;
 		}
 
-		new internal static BasePatch ParseFromJSON(JSON.Object obj, params object[] args) {
+		new internal static BasePatch ParseFromJSON(JSON.Object obj, params object[] args)
+		{
 			var targettype = args[0] as string;
 			var targetAssembly = args[1] as Reflection.AssemblyPatcher;
 

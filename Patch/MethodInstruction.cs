@@ -1,8 +1,10 @@
-﻿namespace Pluton.Patcher {
+﻿namespace Pluton.Patcher
+{
 	using System;
 	using Mono.Cecil.Cil;
 
-	public class MethodInstruction : BaseInstruction {
+	public class MethodInstruction : BaseInstruction
+	{
 		// TODO: Add support for adding try-catch-finally, switch? (should be possible already, but could make it easier), using statments
 
 		Instruction Instruction;
@@ -23,11 +25,12 @@
 
 		public bool Public = true;
 
-		public static MethodInstruction ParseFromJSON(JSON.Object instru, MethodPatch targetMethod) {
+		public static MethodInstruction ParseFromJSON(JSON.Object instru, MethodPatch targetMethod)
+		{
 			var patch = new MethodInstruction();
 
 			patch.InstructionType = (EInstructionType)Enum.Parse(typeof(EInstructionType),
-			                                                     instru["InstructionType"].Str);
+																 instru["InstructionType"].Str);
 
 			switch (patch.InstructionType) {
 				case EInstructionType.SetVisibility:
@@ -65,7 +68,7 @@
 				case EOperandType.Method:
 					if (instru.ContainsKey("TargetMethodSigniture"))
 						patch.Operand = targetMethod.TargetMethod.rootAssemblyPatcher.mainModule.Import(Reflection.AssemblyPatcher.GetPatcher(instru["TargetAssembly"].Str).GetType(instru["TargetType"].Str).GetMethod(instru["TargetMethod"].Str,
-						                                                                                                                                                                                                instru["TargetMethodSigniture"].Str).methodDefinition);
+																																																						instru["TargetMethodSigniture"].Str).methodDefinition);
 					else
 						patch.Operand = targetMethod.TargetMethod.rootAssemblyPatcher.mainModule.Import(Reflection.AssemblyPatcher.GetPatcher(instru["TargetAssembly"].Str).GetType(instru["TargetType"].Str).GetMethod(instru["TargetMethod"].Str).methodDefinition);
 					break;
@@ -112,14 +115,16 @@
 			return patch;
 		}
 
-		public Instruction Build() {
+		public Instruction Build()
+		{
 			Instruction.OpCode = OpCode;
 			Instruction.Operand = Operand;
 			return Instruction;
 		}
 	}
 
-	public enum EOperandType {
+	public enum EOperandType
+	{
 		None,
 
 		Instruction,
@@ -139,7 +144,8 @@
 		String
 	}
 
-	public enum EInstructionType {
+	public enum EInstructionType
+	{
 		Append,
 		Clear,
 		InsertAfter,

@@ -1,4 +1,5 @@
-﻿namespace Pluton.Patcher {
+﻿namespace Pluton.Patcher
+{
 	using System;
 	using System.IO;
 	using System.Collections;
@@ -7,7 +8,8 @@
 	using Reflection;
 	using System.Security.Cryptography;
 
-	public class MethodDB {
+	public class MethodDB
+	{
 		Hashtable methoddb;
 		public static MethodDB instance;
 		static string PATH;
@@ -20,7 +22,7 @@
 		const string orgPrfx = "_orig",
 			edtdPrfx = "_edtd";
 
-		public object this [int tablename, object key] {
+		public object this[int tablename, object key] {
 			get {
 				return Get(tablename, key);
 			}
@@ -29,7 +31,7 @@
 			}
 		}
 
-		public object this [string tablename, object key] {
+		public object this[string tablename, object key] {
 			get {
 				return Get(tablename, key);
 			}
@@ -40,20 +42,23 @@
 
 		#region create/getinstance/load/save
 
-		public MethodDB(string path) {
+		public MethodDB(string path)
+		{
 			methoddb = new Hashtable();
 			PATH = path;
 			Load();
 		}
 
-		public static MethodDB GetInstance() {
+		public static MethodDB GetInstance()
+		{
 			if (instance == null)
 				instance = new MethodDB("Methods.db");
 
 			return instance;
 		}
 
-		public void Load() {
+		public void Load()
+		{
 			if (!MainClass.gendiffs)
 				return;
 
@@ -89,7 +94,8 @@
 			}
 		}
 
-		public void Save() {
+		public void Save()
+		{
 			if (!MainClass.gendiffs)
 				return;
 
@@ -102,14 +108,16 @@
 
 		#region methodspecific
 
-		public static bool CheckMethod(MethodPatcher method, bool original) {
+		public static bool CheckMethod(MethodPatcher method, bool original)
+		{
 			if (TABLE == 1)
 				return true;
 
 			return (string)instance.Get(TABLE - 1, GetKeyName(method, original)) == method.methodDefinition.PrintCSharp();
 		}
 
-		public static string GetDifferences() {
+		public static string GetDifferences()
+		{
 			string result = String.Empty;
 
 			if (TABLE > 1) {
@@ -128,7 +136,8 @@
 			return result;
 		}
 
-		public static void StoreMethod(MethodPatcher method, bool original) {
+		public static void StoreMethod(MethodPatcher method, bool original)
+		{
 			if (MainClass.gendiffs)
 				instance.Add(TABLE, GetKeyName(method, original), method.methodDefinition.PrintCSharp());
 		}
@@ -139,7 +148,8 @@
 
 		#region adders
 
-		public void Add(int tablename, object key, object val) {
+		public void Add(int tablename, object key, object val)
+		{
 			if (key == null)
 				throw new NullReferenceException("object 'key' is null in MethodDB.Add()");
 
@@ -155,7 +165,8 @@
 			hashtable[key] = val;
 		}
 
-		public void Add(string tablename, object key, object val) {
+		public void Add(string tablename, object key, object val)
+		{
 			if (key == null)
 				throw new NullReferenceException("object 'key' is null in MethodDB.Add()");
 
@@ -171,12 +182,14 @@
 			hashtable[key] = val;
 		}
 
-		public void MoveTables(int from, int till) {
+		public void MoveTables(int from, int till)
+		{
 			for (int i = from; i < till; i++)
 				MoveTable(i, i - 1);
 		}
 
-		public void MoveTable(int tableFrom, int tableTo) {
+		public void MoveTable(int tableFrom, int tableTo)
+		{
 			if (methoddb.ContainsKey(tableFrom)) {
 				if (methoddb.ContainsKey(tableTo))
 					methoddb[tableTo] = methoddb[tableFrom];
@@ -190,7 +203,8 @@
 
 		#region getters
 
-		public object Get(int tablename, object key) {
+		public object Get(int tablename, object key)
+		{
 			if (key == null)
 				return null;
 
@@ -198,7 +212,8 @@
 			return hashtable == null ? null : hashtable[key];
 		}
 
-		public object Get(string tablename, object key) {
+		public object Get(string tablename, object key)
+		{
 			if (key == null)
 				return null;
 
@@ -206,7 +221,8 @@
 			return hashtable == null ? null : hashtable[key];
 		}
 
-		public Hashtable GetTable(int tablename) {
+		public Hashtable GetTable(int tablename)
+		{
 			if (methoddb.ContainsKey(tablename))
 				return (Hashtable)methoddb[tablename];
 
@@ -217,17 +233,20 @@
 
 		#region misc
 
-		public static Hashtable HashtableFromFile(string path) {
+		public static Hashtable HashtableFromFile(string path)
+		{
 			using (FileStream stream = new FileStream(path, FileMode.Open))
 				return (Hashtable)new BinaryFormatter().Deserialize(stream);
 		}
 
-		public static void HashtableToFile(Hashtable ht, string path) {
+		public static void HashtableToFile(Hashtable ht, string path)
+		{
 			using (FileStream stream = new FileStream(path, FileMode.Create))
 				new BinaryFormatter().Serialize(stream, ht);
 		}
 
-		public static string GetSha1Hash(string filePath) {
+		public static string GetSha1Hash(string filePath)
+		{
 			using (FileStream fs = File.OpenRead(filePath))
 				return BitConverter.ToString(new SHA1Managed().ComputeHash(fs));
 		}

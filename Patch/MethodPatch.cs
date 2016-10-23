@@ -1,13 +1,16 @@
-﻿namespace Pluton.Patcher {
+﻿namespace Pluton.Patcher
+{
 	using System;
 	using System.Collections.Generic;
 
-	public class MethodPatch : BasePatch {
+	public class MethodPatch : BasePatch
+	{
 		public Reflection.MethodPatcher TargetMethod;
 
 		public List<MethodInstruction> Instructions = new List<MethodInstruction>();
 
-		override public bool Patch() {
+		override public bool Patch()
+		{
 			try {
 				MethodDB.StoreMethod(TargetMethod, true);
 
@@ -56,7 +59,8 @@
 			}
 		}
 
-		new internal static BasePatch ParseFromJSON(JSON.Object obj, params object[] args) {
+		new internal static BasePatch ParseFromJSON(JSON.Object obj, params object[] args)
+		{
 			var targetType = args[0] as Reflection.TypePatcher;
 
 			var patch = new MethodPatch();
@@ -65,7 +69,7 @@
 				patch.TargetMethod = targetType.GetMethod(obj["TargetMethod"].Str, obj["TargetMethodSigniture"].Str);
 			else
 				patch.TargetMethod = targetType.GetMethod(obj["TargetMethod"].Str);
-            
+
 			MainClass.LogLine(" + " + patch.TargetMethod.methodDefinition.GetSigniture());
 
 			foreach (JSON.Value instru in obj["Instructions"].Array) {

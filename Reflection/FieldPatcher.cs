@@ -1,7 +1,9 @@
-﻿namespace Pluton.Patcher.Reflection {
+﻿namespace Pluton.Patcher.Reflection
+{
 	using Mono.Cecil;
 
-	public class FieldPatcher : PatcherObject {
+	public class FieldPatcher : PatcherObject
+	{
 		internal FieldDefinition fieldDefinition;
 
 		public bool Public {
@@ -33,7 +35,8 @@
 		}
 
 		public FieldPatcher(PatcherObject prnt, FieldDefinition fieldDef)
-			: base(prnt) {
+			: base(prnt)
+		{
 			fieldDefinition = fieldDef;
 		}
 
@@ -43,7 +46,8 @@
 
 		public void SetReadOnly(bool value = true) => ReadOnly = value;
 
-		public void SetConstant(object value = null) {
+		public void SetConstant(object value = null)
+		{
 			fieldDefinition.HasConstant = true;
 			fieldDefinition.Constant = value;
 		}

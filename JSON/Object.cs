@@ -1,15 +1,17 @@
-﻿namespace Pluton.Patcher.JSON {
+﻿namespace Pluton.Patcher.JSON
+{
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using System.Globalization;
 	using System.Text;
 
-	public class Object : IEnumerable<KeyValuePair<string, Value>>, IEnumerable {
+	public class Object : IEnumerable<KeyValuePair<string, Value>>, IEnumerable
+	{
 
 		readonly IDictionary<string, Value> values = new Dictionary<string, Value>();
 
-		public Value this [string key] {
+		public Value this[string key] {
 			get {
 				return GetValue(key);
 			}
@@ -18,10 +20,12 @@
 			}
 		}
 
-		public Object() {
+		public Object()
+		{
 		}
 
-		public Object(Object other) {
+		public Object(Object other)
+		{
 			values = new Dictionary<string, Value>();
 			if (other != null) {
 				foreach (KeyValuePair<string, Value> current in other.values) {
@@ -32,12 +36,14 @@
 
 		static Object Fail(char expected, int position) => Fail(new string(expected, 1), position);
 
-		static Object Fail(string expected, int position) {
+		static Object Fail(string expected, int position)
+		{
 			MainClass.LogErrorLine("Fail: " + expected + " @ " + position);
 			return null;
 		}
 
-		public static Object Parse(string jsonString) {
+		public static Object Parse(string jsonString)
+		{
 			if (string.IsNullOrEmpty(jsonString)) {
 				return null;
 			}
@@ -47,8 +53,7 @@
 			for (int i = 0; i < jsonString.Length; i++) {
 				i = SkipWhitespace(jsonString, i);
 				switch (parsingState) {
-					case ParsingState.Object:
-						{
+					case ParsingState.Object: {
 							if (jsonString[i] != '{') {
 								return Fail('{', i);
 							}
@@ -60,8 +65,7 @@
 							parsingState = ParsingState.Key;
 							break;
 						}
-					case ParsingState.Array:
-						{
+					case ParsingState.Array: {
 							if (jsonString[i] != '[')
 								return Fail('[', i);
 
@@ -73,8 +77,7 @@
 							parsingState = ParsingState.Value;
 							break;
 						}
-					case ParsingState.EndObject:
-						{
+					case ParsingState.EndObject: {
 							if (jsonString[i] != '}')
 								return Fail('}', i);
 
@@ -94,8 +97,7 @@
 							parsingState = ParsingState.ValueSeparator;
 							break;
 						}
-					case ParsingState.EndArray:
-						{
+					case ParsingState.EndArray: {
 							if (jsonString[i] != ']')
 								return Fail(']', i);
 
@@ -128,8 +130,7 @@
 							parsingState = ParsingState.KeyValueSeparator;
 						}
 						break;
-					case ParsingState.Value:
-						{
+					case ParsingState.Value: {
 							char c = jsonString[i];
 							if (c == '"') {
 								parsingState = ParsingState.String;
@@ -149,7 +150,7 @@
 											}
 											return Fail("valid array", i);
 									}
-									IL_26C:
+								IL_26C:
 									if (c2 != 'f') {
 										if (c2 == 'n') {
 											parsingState = ParsingState.Null;
@@ -168,7 +169,7 @@
 								}
 								parsingState = ParsingState.Number;
 							}
-							IL_2E3:
+						IL_2E3:
 							i--;
 							break;
 						}
@@ -178,8 +179,7 @@
 
 						parsingState = ParsingState.Value;
 						break;
-					case ParsingState.ValueSeparator:
-						{
+					case ParsingState.ValueSeparator: {
 							char c2 = jsonString[i];
 							if (c2 != ',') {
 								if (c2 != ']') {
@@ -197,8 +197,7 @@
 							}
 							break;
 						}
-					case ParsingState.String:
-						{
+					case ParsingState.String: {
 							string text2 = ParseString(jsonString, ref i);
 							if (text2 == null)
 								return Fail("string value", i);
@@ -215,12 +214,11 @@
 							parsingState = ParsingState.ValueSeparator;
 							break;
 						}
-					case ParsingState.Number:
-						{
+					case ParsingState.Number: {
 							double num = ParseNumber(jsonString, ref i);
 							if (double.IsNaN(num))
 								return Fail("valid number", i);
-                        
+
 							ValueType type = value.Type;
 							if (type != ValueType.Object) {
 								if (type != ValueType.Array)
@@ -251,7 +249,7 @@
 						} else {
 							if (jsonString.Length < i + 5 || jsonString[i + 1] != 'a' || jsonString[i + 2] != 'l' || jsonString[i + 3] != 's' || jsonString[i + 4] != 'e')
 								return Fail("false", i);
-                        
+
 							ValueType type = value.Type;
 							if (type != ValueType.Object) {
 								if (type != ValueType.Array)
@@ -274,7 +272,7 @@
 							if (type != ValueType.Object) {
 								if (type != ValueType.Array)
 									return null;
-                            
+
 								value.Array.Add(new Value(ValueType.Null));
 							} else {
 								value.Obj.values[list.Pop()] = new Value(ValueType.Null);
@@ -288,7 +286,8 @@
 			return null;
 		}
 
-		static double ParseNumber(string str, ref int startPosition) {
+		static double ParseNumber(string str, ref int startPosition)
+		{
 			if (startPosition >= str.Length || (!char.IsDigit(str[startPosition]) && str[startPosition] != '-'))
 				return Double.NaN;
 
@@ -298,16 +297,17 @@
 
 			double result;
 			if (!double.TryParse(str.Substring(startPosition, num - startPosition),
-			                     NumberStyles.Float,
-			                     CultureInfo.InvariantCulture,
-			                     out result))
+								 NumberStyles.Float,
+								 CultureInfo.InvariantCulture,
+								 out result))
 				return Double.NaN;
 
 			startPosition = num - 1;
 			return result;
 		}
 
-		static string ParseString(string str, ref int startPosition) {
+		static string ParseString(string str, ref int startPosition)
+		{
 			if (str[startPosition] != '"' || startPosition + 1 >= str.Length) {
 				Fail('"', startPosition);
 				return null;
@@ -332,30 +332,36 @@
 			return result;
 		}
 
-		static int SkipWhitespace(string str, int pos) {
+		static int SkipWhitespace(string str, int pos)
+		{
 			while (pos < str.Length && char.IsWhiteSpace(str[pos])) {
 				pos++;
 			}
 			return pos;
 		}
 
-		public void Add(KeyValuePair<string, Value> pair) {
+		public void Add(KeyValuePair<string, Value> pair)
+		{
 			values[pair.Key] = pair.Value;
 		}
 
-		public void Add(string key, Value value) {
+		public void Add(string key, Value value)
+		{
 			values[key] = value;
 		}
 
-		public void Clear() {
+		public void Clear()
+		{
 			values.Clear();
 		}
 
-		public bool ContainsKey(string key) {
+		public bool ContainsKey(string key)
+		{
 			return values.ContainsKey(key);
 		}
 
-		public Array GetArray(string key) {
+		public Array GetArray(string key)
+		{
 			Value value = GetValue(key);
 			if (value == null) {
 				return new Array();
@@ -363,7 +369,8 @@
 			return value.Array;
 		}
 
-		public bool GetBoolean(string key, bool bDefault = false) {
+		public bool GetBoolean(string key, bool bDefault = false)
+		{
 			Value value = GetValue(key);
 			if (value == null) {
 				return bDefault;
@@ -377,23 +384,28 @@
 			return bDefault;
 		}
 
-		public IEnumerator<KeyValuePair<string, Value>> GetEnumerator() {
+		public IEnumerator<KeyValuePair<string, Value>> GetEnumerator()
+		{
 			return values.GetEnumerator();
 		}
 
-		IEnumerator IEnumerable.GetEnumerator() {
+		IEnumerator IEnumerable.GetEnumerator()
+		{
 			return values.GetEnumerator();
 		}
 
-		public float GetFloat(string key, float iDefault = 0) {
+		public float GetFloat(string key, float iDefault = 0)
+		{
 			return (float)GetNumber(key, (double)iDefault);
 		}
 
-		public int GetInt(string key, int iDefault = 0) {
+		public int GetInt(string key, int iDefault = 0)
+		{
 			return (int)GetNumber(key, iDefault);
 		}
 
-		public double GetNumber(string key, double iDefault = 0) {
+		public double GetNumber(string key, double iDefault = 0)
+		{
 			Value value = GetValue(key);
 			if (value == null)
 				return iDefault;
@@ -409,7 +421,8 @@
 			return iDefault;
 		}
 
-		public Object GetObject(string key) {
+		public Object GetObject(string key)
+		{
 			Value value = GetValue(key);
 			if (value == null)
 				return new Object();
@@ -417,7 +430,8 @@
 			return value.Obj;
 		}
 
-		public string GetString(string key, string strDEFAULT = "") {
+		public string GetString(string key, string strDEFAULT = "")
+		{
 			Value value = GetValue(key);
 			if (value == null)
 				return strDEFAULT;
@@ -426,18 +440,21 @@
 			return str.Replace("\\/", "/");
 		}
 
-		public Value GetValue(string key) {
+		public Value GetValue(string key)
+		{
 			Value result;
 			values.TryGetValue(key, out result);
 			return result;
 		}
 
-		public void Remove(string key) {
+		public void Remove(string key)
+		{
 			if (values.ContainsKey(key))
 				values.Remove(key);
 		}
 
-		public override string ToString() {
+		public override string ToString()
+		{
 			var stringBuilder = new StringBuilder();
 			stringBuilder.Append('{');
 			foreach (KeyValuePair<string, Value> current in values) {
@@ -453,7 +470,8 @@
 			return stringBuilder.ToString();
 		}
 
-		enum ParsingState {
+		enum ParsingState
+		{
 			Object,
 			Array,
 			EndObject,

@@ -3,8 +3,10 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System.Reflection;
 
-namespace Pluton.Patcher.Reflection {
-	public class MethodPatcher : PatcherObject {
+namespace Pluton.Patcher.Reflection
+{
+	public class MethodPatcher : PatcherObject
+	{
 		internal MethodDefinition methodDefinition;
 		internal ILProcessor IlProc;
 
@@ -21,7 +23,8 @@ namespace Pluton.Patcher.Reflection {
 		}
 
 		public MethodPatcher(PatcherObject prnt, MethodDefinition metDef)
-			: base(prnt) {
+			: base(prnt)
+		{
 			methodDefinition = metDef;
 			IlProc = metDef.Body.GetILProcessor();
 			rootAssemblyPatcher = prnt.rootAssemblyPatcher;
@@ -30,21 +33,24 @@ namespace Pluton.Patcher.Reflection {
 				original = metDef.Print();
 		}
 
-		public MethodPatcher Clear() {
+		public MethodPatcher Clear()
+		{
 			methodDefinition.Body.Instructions.Clear();
 			methodDefinition.Body.ExceptionHandlers.Clear();
 			methodDefinition.Body.Variables.Clear();
 			return this;
 		}
 
-		public MethodPatcher Append(Instruction i) {
+		public MethodPatcher Append(Instruction i)
+		{
 			IlProc.Append(i);
 			return this;
 		}
 
 		public MethodPatcher AppendCall(MethodPatcher method) => Append(Instruction.Create(OpCodes.Call, rootAssemblyPatcher.ImportMethod(method)));
 
-		public MethodPatcher InsertAfter(Instruction after, Instruction insert) {
+		public MethodPatcher InsertAfter(Instruction after, Instruction insert)
+		{
 			IlProc.InsertAfter(after, insert);
 			return this;
 		}
@@ -55,7 +61,8 @@ namespace Pluton.Patcher.Reflection {
 
 		public MethodPatcher InsertCallAfter(int after, MethodPatcher method) => InsertCallAfter(IlProc.Body.Instructions[after], method);
 
-		public MethodPatcher InsertBefore(Instruction before, Instruction insert) {
+		public MethodPatcher InsertBefore(Instruction before, Instruction insert)
+		{
 			IlProc.InsertBefore(before, insert);
 			return this;
 		}
@@ -65,18 +72,20 @@ namespace Pluton.Patcher.Reflection {
 		public MethodPatcher InsertBeforeRet(Instruction insert) => InsertBefore(IlProc.Body.Instructions[IlProc.Body.Instructions.Count - 1], insert);
 
 		public MethodPatcher InsertCallBeforeRet(MethodPatcher method) => InsertBefore(IlProc.Body.Instructions[IlProc.Body.Instructions.Count - 1],
-                                                                                       Instruction.Create(OpCodes.Call, rootAssemblyPatcher.ImportMethod(method)));
+																					   Instruction.Create(OpCodes.Call, rootAssemblyPatcher.ImportMethod(method)));
 
 		public MethodPatcher InsertCallBefore(Instruction before, MethodPatcher method) => InsertBefore(before, Instruction.Create(OpCodes.Call, rootAssemblyPatcher.ImportMethod(method)));
 
 		public MethodPatcher InsertCallBefore(int before, MethodPatcher method) => InsertCallBefore(IlProc.Body.Instructions[before], method);
 
-		public MethodPatcher RemoveAt(int rem) {
+		public MethodPatcher RemoveAt(int rem)
+		{
 			IlProc.Remove(IlProc.Body.Instructions[rem]);
 			return this;
 		}
 
-		public MethodPatcher RemoveRange(int from, int to) {
+		public MethodPatcher RemoveRange(int from, int to)
+		{
 			for (int i = to; i >= from; i--)
 				IlProc.Body.Instructions.RemoveAt(i);
 			return this;
@@ -85,34 +94,35 @@ namespace Pluton.Patcher.Reflection {
 		public string FriendlyName {
 			get {
 				return String.Format("{0}.{1}",
-				                     parent.As<TypePatcher>().typeDefinition.Name,
-				                     methodDefinition.Name);
+									 parent.As<TypePatcher>().typeDefinition.Name,
+									 methodDefinition.Name);
 			}
 		}
 
 		public string IlName {
 			get {
 				return String.Format("{0}.{1}::{2}",
-				                     parent.As<TypePatcher>().typeDefinition.Namespace,
-				                     parent.As<TypePatcher>().typeDefinition.Name,
-				                     methodDefinition.Name);
+									 parent.As<TypePatcher>().typeDefinition.Namespace,
+									 parent.As<TypePatcher>().typeDefinition.Name,
+									 methodDefinition.Name);
 			}
 		}
 
-		public string PrintAndLink(params MethodPatcher[] others) {
+		public string PrintAndLink(params MethodPatcher[] others)
+		{
 			string diffHtml = MainClass.GetHtmlDiff(original, ToString()),
 			otherPrint = String.Empty;
 
 			foreach (MethodPatcher other in others) {
 				otherPrint = other.methodDefinition.PrintCSharp().Replace("\"", "\\'").TrimEnd('\\').Replace("\r\n",
-				                                                                                             ".enter.").Replace("\t",
-				                                                                                                                ".tab.").Replace("//",
-				                                                                                                                                             "##");
+																											 ".enter.").Replace("\t",
+																																".tab.").Replace("//",
+																																							 "##");
 				diffHtml = diffHtml
-                    .Replace(other.FriendlyName,
-				                         "<a href=\"javascript:void(0);\" onclick=\"hatemlPopUp('" + otherPrint + "')\">" + other.FriendlyName + "</a>")
-                    .Replace(other.IlName,
-				                         "<a href=\"javascript:void(0);\" onclick=\"hatemlPopUp('" + otherPrint + "')\">" + other.IlName + "</a>");
+					.Replace(other.FriendlyName,
+										 "<a href=\"javascript:void(0);\" onclick=\"hatemlPopUp('" + otherPrint + "')\">" + other.FriendlyName + "</a>")
+					.Replace(other.IlName,
+										 "<a href=\"javascript:void(0);\" onclick=\"hatemlPopUp('" + otherPrint + "')\">" + other.IlName + "</a>");
 			}
 			return diffHtml;
 		}

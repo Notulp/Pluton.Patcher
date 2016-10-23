@@ -1,7 +1,9 @@
-﻿namespace Pluton.Patcher {
+﻿namespace Pluton.Patcher
+{
 	using System;
 
-	public class TypeInstruction : BaseInstruction {
+	public class TypeInstruction : BaseInstruction
+	{
 		// TODO: 1. add support for creating nested types
 		//          tho it's probably possible from AssemblyInstruction,
 		//          by setting the name like: TypeToCreateNestedTypeIn/NestedTypesName
@@ -15,12 +17,13 @@
 		// the name of the field/method to be created
 		public string Name;
 
-		public static TypeInstruction ParseFromJSON(JSON.Object obj) {
+		public static TypeInstruction ParseFromJSON(JSON.Object obj)
+		{
 			var instruction = new TypeInstruction();
 
 			instruction.InstructionType = (EInstructionType)Enum.Parse(typeof(EInstructionType),
-			                                                           obj["InstructionType"].Str,
-			                                                           true);
+																	   obj["InstructionType"].Str,
+																	   true);
 
 			instruction.Name = obj.ContainsKey("Name") ? obj["Name"].Str : null;
 
@@ -29,7 +32,8 @@
 			return instruction;
 		}
 
-		public enum EInstructionType {
+		public enum EInstructionType
+		{
 			CreateMethod,
 			CreateField,
 			SetVisibility

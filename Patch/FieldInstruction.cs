@@ -1,7 +1,9 @@
-﻿namespace Pluton.Patcher {
+﻿namespace Pluton.Patcher
+{
 	using System;
 
-	public class FieldInstruction : BaseInstruction {
+	public class FieldInstruction : BaseInstruction
+	{
 		// TODO: Add support for static fields and constructors
 		// more predefined or remove the only one as its just a hacky way to do it
 
@@ -18,12 +20,13 @@
 
 		public object Value;
 
-		public static FieldInstruction ParseFromJSON(JSON.Object obj) {
+		public static FieldInstruction ParseFromJSON(JSON.Object obj)
+		{
 			var instruction = new FieldInstruction();
 
 			instruction.InstructionType = (EInstructionType)Enum.Parse(typeof(EInstructionType),
-			                                                           obj["InstructionType"].Str,
-			                                                           true);
+																	   obj["InstructionType"].Str,
+																	   true);
 			if (obj.ContainsKey("ValueSource")) {
 				instruction.ValueSource = (EValueSource)Enum.Parse(typeof(EValueSource), obj["ValueSource"].Str, true);
 
@@ -51,12 +54,14 @@
 			return instruction;
 		}
 
-		public enum EInstructionType {
+		public enum EInstructionType
+		{
 			SetValue,
 			SetVisibility
 		}
 
-		public enum EValueSource {
+		public enum EValueSource
+		{
 			StaticField,
 			TypeConstruction,
 			Custom,
